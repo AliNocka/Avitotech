@@ -1,0 +1,27 @@
+<html>
+<meta charset="UTF-8">
+<title>Url сокращатель</title>
+<body style="background-color:F08080;">
+<hr>
+<h1 style="text-align:center;">Сокращатель урлов</h1>
+<hr>
+
+<form action="/" method="post">
+                        <input  type="text" name="url" placeholder="url" aria-label="label">
+                        <input  type="text" name="user_url" placeholder="пользовательский url" aria-label="label">
+                        <button type="submit">Submit</button>
+</form>
+{% if shortened_url %}
+
+<p>Ващ сокращенный url: {{ shortened_url }}</p>
+
+{% endif %}
+
+{% if error %}
+
+<p>Произошла ошибка: {{ error }}</p>
+
+{% endif %}
+
+</body>
+</html>
