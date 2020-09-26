@@ -17,7 +17,7 @@ class LocalDatabase:
 		self._data[key] = str.encode(value)
 
 	async def incr(self, key):
-		value = int(self._data.get(key, b'0').decode('utf-8'))
+		value = int(self._data.get(key, b"0").decode("utf-8"))
 		value += 1
 		self._data[key] = str.encode(str(value))
 		return value
@@ -36,11 +36,11 @@ class DBFactory:
 
 	@staticmethod
 	async def get_db(dbname, config):
-		if dbname == 'redis':
-			redis = await aioredis.create_redis_pool('redis://{}:{}'.format(config['redis_host'], config['redis_port']),\
-                                                     db=config['db'], password=config['redis_password'])
+		if dbname == "redis":
+			redis = await aioredis.create_redis_pool("redis://{}:{}".format(config["redis_host"], config["redis_port"]),\
+                                                     db=config["db"], password=config["redis_password"])
 			return redis
-		elif dbname == 'local':
+		elif dbname == "local":
 			return LocalDatabase()
 		else:
-			raise ValueError('Incorrect database name')
+			raise ValueError("Incorrect database name")

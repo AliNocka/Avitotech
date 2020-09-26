@@ -16,30 +16,30 @@ async def handle_shortify(request):
     Хендлер обрабатывающий запросы на сокращение ссылок
     """
     data = await request.post()
-    db = request.app['db']
-    url = data.get('url')
-    user_url = data.get('user_url')
+    db = request.app["db"]
+    url = data.get("url")
+    user_url = data.get("user_url")
     if not url:
-        return aiohttp_jinja2.render_template('index.html', request, {
-            'error': ERRORS["without_url"]
+        return aiohttp_jinja2.render_template("index.html", request, {
+            "error": ERRORS["without_url"]
         })
     if not utils.is_valid_url(url):
-        return aiohttp_jinja2.render_template('index.html', request, {
-            'error': ERRORS["invalid_url"]
+        return aiohttp_jinja2.render_template("index.html", request, {
+            "error": ERRORS["invalid_url"]
         })
     if user_url:
         exists = await db.get(user_url)
         if exists:
-            return aiohttp_jinja2.render_template('index.html', request, {
-                'error': ERRORS["busy_url"]
+            return aiohttp_jinja2.render_template("index.html", request, {
+                "error": ERRORS["busy_url"]
             })
         short_url = user_url
     else:
         short_url = await db.get(url)
         # Если ссылка уже есть в базе, то не плодим новые короткие ссылки
         if short_url:
-            return aiohttp_jinja2.render_template('index.html', request, {
-                'shortened_url': '{}:{}/{}'.format(settings.HOST, settings.PORT, short_url.decode('UTF-8'))
+            return aiohttp_jinja2.render_template("index.html", request, {
+                "shortened_url": "{}:{}/{}".format(settings.HOST, settings.PORT, short_url.decode("UTF-8"))
             })
 
         link_count = await db.incr(settings.DB_LINKS_COUNT_KEY)
@@ -56,25 +56,25 @@ async def handle_shortify(request):
     # Это позволит избежать наличия дубликатов 
     await db.set(short_url, url)
     await db.set(url, short_url)
-    return aiohttp_jinja2.render_template('index.html', request, {
-                'shortened_url': '{}:{}/{}'.format(settings.HOST, settings.PORT, short_url)
+    return aiohttp_jinja2.render_template("index.html", request, {
+                "shortened_url": "{}:{}/{}".format(settings.HOST, settings.PORT, short_url)
             })
 
 async def handle_index(request):
     """
     Хендлер, отдающий главную страницу
     """
-    return aiohttp_jinja2.render_template('index.html', request, {})
+    return aiohttp_jinja2.render_template("index.html", request, {})
 
 async def handle_redirect(request):
     """
     Хендлер для редиректа по сокращенному url
     """
-    db = request.app['db']
-    short_url = request.match_info.get('short_url')
+    db = request.app["db"]
+    short_url = request.match_info.get("short_url")
     if not short_url:
         return web.HTTPNotFound()
     url = await db.get(short_url)
     if not url:
         return web.HTTPNotFound()
-    return web.HTTPFound(url.decode('UTF-8'))
+    return web.HTTPFound(url.decode("UTF-8"))
