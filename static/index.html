@@ -1,25 +1,48 @@
 <html>
 <meta charset="UTF-8">
 <title>Url сокращатель</title>
-<body style="background-color:F08080;">
+   <style>
+	body {
+		background-image: url("/static/images/1.jpg");
+		color: #fff;
+		background-attachment: fixed;
+	}
+
+	.center {
+		text-align:center;
+	}
+
+	.font-24 {
+		font-size: 24px;
+	}
+
+	.padding-12 {
+		padding: 12px;
+	}
+
+	.md-width {
+		width: 30%;
+	}
+   </style>
+ </head>
 <hr>
-<h1 style="text-align:center;">Сокращатель урлов</h1>
+<h1 class="center">Сокращатель урлов</h1>
 <hr>
 
-<form action="/" method="post">
-                        <input  type="text" name="url" placeholder="url" aria-label="label">
-                        <input  type="text" name="user_url" placeholder="пользовательский url" aria-label="label">
-                        <button type="submit">Submit</button>
+<form action="/" method="post" class="center">
+                        <p><input class="padding-12 md-width" type="text" name="url" placeholder="url" aria-label="label"/><p>
+                        <p><input class="padding-12 md-width" type="text" name="user_url" placeholder="желаемый url" aria-label="label"/><p>
+                        <button type="submit" class="padding-12">Submit</button>
 </form>
 {% if shortened_url %}
 
-<p>Ващ сокращенный url: {{ shortened_url }}</p>
+<p class="center font-24">Ваш сокращенный url: <a href="http://{{ shortened_url }}">{{ shortened_url }}</a></p>
 
 {% endif %}
 
 {% if error %}
 
-<p>Произошла ошибка: {{ error }}</p>
+<p class="center font-24">Произошла ошибка: {{ error }}</p>
 
 {% endif %}
 
