@@ -2,6 +2,10 @@ import aioredis
 
 
 class LocalDatabase:
+	"""
+	Имплементация локальной базы данных (NOTE: предполагается для использования в тестах)
+	Реализует функционал redis из aioredis
+	"""
 
 	def __init__(self):
 		self._data = {}
@@ -26,6 +30,9 @@ class LocalDatabase:
 
 
 class DBFactory:
+	"""
+	Фабрика для получения различных имплементаций баз данных
+	"""
 
 	@staticmethod
 	async def get_db(dbname, config):

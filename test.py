@@ -8,6 +8,9 @@ from views import ERRORS
 
 
 class UtilsTest(unittest.TestCase):
+	"""
+	Unit-тесты для функций общего назначения
+	"""
 
 	def test_encoder(self):
 		self.assertEqual(utils.encode(1), 'a')
@@ -20,6 +23,10 @@ class UtilsTest(unittest.TestCase):
 
 
 class ServerTest(AioHTTPTestCase):
+	"""
+	Unit-тесты для сервера. В качестве тестовой бд используется локальная
+	имплементация базы, хранящая все в памяти
+	"""
 
 	async def get_application(self):
 		server = Server('server_conf.yaml', 'local')

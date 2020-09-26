@@ -4,14 +4,17 @@ import utils
 import settings
 from aiohttp import web
 
+
 ERRORS = {
     "without_url": "Не передан url", 
     "invalid_url": "Переданный url не является валидным",
     "busy_url": "Данный url уже занят"
 }
 
-
 async def handle_shortify(request):
+    """
+    Хендлер обрабатывающий запросы на сокращение ссылок
+    """
     data = await request.post()
     db = request.app['db']
     url = data.get('url')
@@ -33,6 +36,7 @@ async def handle_shortify(request):
         short_url = user_url
     else:
         short_url = await db.get(url)
+        # Если ссылка уже есть в базе, то не плодим новые короткие ссылки
         if short_url:
             return aiohttp_jinja2.render_template('index.html', request, {
                 'shortened_url': '{}:{}/{}'.format(settings.HOST, settings.PORT, short_url.decode('UTF-8'))
@@ -48,6 +52,8 @@ async def handle_shortify(request):
             short_url = Shortener.encode(link_count)
             exists = await db.get(short_url)
 
+    # Заносим оба варианта в базу, чтобы получить возможно проверять наличие полного url в базе
+    # Это позволит избежать наличия дубликатов 
     await db.set(short_url, url)
     await db.set(url, short_url)
     return aiohttp_jinja2.render_template('index.html', request, {
@@ -55,9 +61,15 @@ async def handle_shortify(request):
             })
 
 async def handle_index(request):
+    """
+    Хендлер, отдающий главную страницу
+    """
     return aiohttp_jinja2.render_template('index.html', request, {})
 
 async def handle_redirect(request):
+    """
+    Хендлер для редиректа по сокращенному url
+    """
     db = request.app['db']
     short_url = request.match_info.get('short_url')
     if not short_url:
